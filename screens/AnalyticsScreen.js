@@ -111,17 +111,26 @@ export default function AnalyticsScreen() {
                       },
                     ]
                   }
-									width={25}
-                  height={25}
-									paddingLeft={0}
+									width={50}
+                  height={50}
+									paddingLeft={12}
                   chartConfig={chartConfig}
                   hasLegend={false}
                   accessor="value"
 									backgroundColor="transparent"
-                  absolute
                 />
               </View>
-              <Text>{ date.day }</Text>
+              <View style={{
+              	flex: -1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 15,
+                backgroundColor: 'white',
+                width: 30,
+                height: 30
+              }}>
+                <Text>{ date.day }</Text>
+              </View>
             </View>
           )
         }}

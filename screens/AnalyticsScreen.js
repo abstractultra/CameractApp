@@ -2,18 +2,27 @@ import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {VictoryChart, VictoryLine, VictoryPie} from 'victory-native';
 import { Calendar } from 'react-native-calendars';
-import Pie from 'react-native-pie';
+import { PieChart } from 'react-native-chart-kit';
 
 const graphicColor = ['#388087', '#6fb3b8', '#badfe7']; // Colors
-const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 0 }, { y: 100 }]; // Data
-// used
-// to make the animate prop work
+const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 0 }, { y: 100 }];
 
 const moodCount = {
   joy: 10,
   angry: 5,
   sad: 62,
   surprised: 1
+};
+
+const chartConfig = {
+  backgroundGradientFrom: "#1E2923",
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: "#08130D",
+  backgroundGradientToOpacity: 0.5,
+  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0.5,
+  useShadowColorFromDataset: false // optional
 };
 
 export default function AnalyticsScreen() {
@@ -82,22 +91,34 @@ export default function AnalyticsScreen() {
               justifyContent: 'center'
             }}>
               <View style={StyleSheet.absoluteFill}>
-                <Pie
-									radius={50}
-									sections={[
-                    {
-                      percentage: 15,
-                      color: 'orange'
-                    },
-                    {
-                      percentage: 35,
-                      color: 'blue',
-                    },
-                    {
-                      percentage: 50,
-                      color: 'green'
-                    }
-                  ]}
+                <PieChart
+									data={
+									  [
+                      {
+                        name: '',
+                        value: Math.random() * 100,
+                        color: 'orange'
+                      },
+                      {
+                        name: '',
+                        value: Math.random() * 100,
+                        color: 'green'
+                      },
+                      {
+                        name: '',
+                        value: Math.random() * 100,
+                        color: 'lightblue'
+                      },
+                    ]
+                  }
+									width={25}
+                  height={25}
+									paddingLeft={0}
+                  chartConfig={chartConfig}
+                  hasLegend={false}
+                  accessor="value"
+									backgroundColor="transparent"
+                  absolute
                 />
               </View>
               <Text>{ date.day }</Text>

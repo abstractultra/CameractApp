@@ -6,32 +6,33 @@ const initialTasks = [
   [
     {
       name: "Go do something",
-			id: 1,
     },
     {
       name: "Eat a cookie",
-      id: 2,
     },
     {
       name: "Go outside",
-      id: 3,
     },
   ],
   [
     {
       name: "Go do everything",
-      id: 4,
     },
     {
       name: "Eat a pizza",
-      id: 5,
     },
     {
       name: "Go to your basement",
-      id: 6
     },
   ],
-];
+].map((() => {
+  let id = 0;
+  return function (timeframe) {
+    return timeframe.map(task => {
+      return { ...task, id: id++ };
+    });
+  };
+})());
 
 export default function ProfileScreen() {
   const [selectedTimeframe, setTimeframe] = useState(0);
@@ -64,7 +65,15 @@ export default function ProfileScreen() {
       <FlatList
         data={tasks[selectedTimeframe]}
         renderItem={({ item }) => (
-          <ListItem title={item.task} checkBox={{ checked: checkedTasks[item.id] }} />
+          <ListItem
+            title={item.name}
+            checkBox={{
+              checked: checkedTasks[item.id],
+              onPress: () => {
+                setCheckedTasks({ ...checkedTasks, [item.id]: !checkedTasks[item.id] });
+              }
+            }}
+          />
         )}
         keyExtractor={(item, index) => index.toString()}
         bottomDivider

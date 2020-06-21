@@ -1,23 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {TouchableOpacity, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {VictoryChart, VictoryLine, VictoryPie} from 'victory-native';
 import { Calendar } from 'react-native-calendars';
 import { PieChart } from 'react-native-chart-kit';
-
-const dateMoodData = new Map();
-
-const graphicColor = ['#388087', '#6fb3b8', '#badfe7']; // Colors
-const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 0 }, { y: 100 }];
+import dateFormat from 'dateformat';
+import {ButtonGroup} from 'react-native-elements';
 
 const JOY_COLOR = 'orange';
 const ANGRY_COLOR = 'red';
 const SAD_COLOR = 'lightblue';
 
-const moodCount = {
-  joy: 10,
-  angry: 5,
-  sad: 62
-};
+const graphicColor = [JOY_COLOR, SAD_COLOR, ANGRY_COLOR];
+const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 0 }, { y: 100 }];
 
 const chartConfig = {
   backgroundGradientFrom: "#1E2923",
@@ -30,33 +24,86 @@ const chartConfig = {
   useShadowColorFromDataset: false // optional
 };
 
+Date.prototype.addDays = function(days) {
+  const date = new Date(this.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+}
+
+const moods = ['Joy', 'Sorrow', 'Anger'];
 export default function AnalyticsScreen() {
-  const [graphicData, setGraphicData] = useState(defaultGraphicData);
+  const [currentMoodData, setCurrentMoodData] = useState(defaultGraphicData);
+  const [currentDate, setCurrentDate] = useState(dateFormat(new Date(), "isoDate"));
+  const [selectedMoodIndex, setSelectedMoodIndex] = useState(0);
+  const [moodGraphData, setMoodGraphData] = useState([]);
+
+  const dateMoodData = useRef({
+    [currentDate]: {
+      joy: Math.random() * 1000,
+      angry: Math.random() * 100,
+      sorrow: Math.random() * 200
+    }
+  });
+
+  function dateDataToPieData(dateData) {
+    return Object.keys(dateData).map(mood => {
+      const color = mood === 'joy' ? JOY_COLOR : mood === 'angry' ? ANGRY_COLOR : SAD_COLOR;
+      return {
+        name: '',
+        value: dateData[mood],
+        color: color
+      };
+    });
+  }
 
   useEffect(() => {
-    const moodData = Object.keys(moodCount).map(mood => {
+    const moodData = Object.keys(dateMoodData.current[currentDate]).map(mood => {
       return {
-        y: moodCount[mood],
+        y: dateMoodData.current[currentDate][mood],
       };
-    })
-    setGraphicData(moodData);
+    });
+    setCurrentMoodData(moodData);
     // display
-  }, []);
+  }, [currentDate]);
 
+  useEffect(() => {
+    const startingMonth = new Date(currentDate).getMonth();
+    const newMoodGraphData = [];
+    const mood = ['joy', 'sorrow', 'angry'][selectedMoodIndex];
+    let curDate = new Date(currentDate);
+    curDate.setDate(1);
+    while (curDate.getMonth() === startingMonth) {
+      newMoodGraphData.push({
+        x: curDate.getDate(),
+        y: dateMoodData.current[dateFormat(curDate, "isoDate")][mood]
+      });
+      curDate = curDate.addDays(1);
+    }
+    setMoodGraphData(newMoodGraphData);
+  }, [selectedMoodIndex, currentDate]);
 
+  function updateIndex(selectedIndex) {
+    setSelectedMoodIndex(selectedIndex);
+  }
 
   return (
     <ScrollView style={{ flex: 1 }}>
+			<Text style={styles.title}>Mood Circle for {currentDate}</Text>
       <VictoryPie
         animate={{ easing: 'exp' }}
-        data={graphicData}
+        data={currentMoodData}
         width={250}
         height={250}
         colorScale={graphicColor}
         innerRadius={50}
       />
-      <VictoryChart>
-        <VictoryLine
+			<ButtonGroup
+				buttons={['Joy', 'Sorrow', 'Anger']}
+				selectedIndex={selectedMoodIndex}
+				onPress={updateIndex}
+			/>
+			<VictoryChart>
+				<VictoryLine
           style={{
             data: { stroke: "#c43a31" },
             parent: { border: "1px solid #ccc"}
@@ -65,49 +112,39 @@ export default function AnalyticsScreen() {
             duration: 2000,
             onLoad: { duration: 1000 }
           }}
-          data={[
-            { x: 1, y: 2 },
-            { x: 2, y: 3 },
-            { x: 3, y: 5 },
-            { x: 4, y: 4 },
-            { x: 5, y: 7 }
-          ]}
+          data={moodGraphData}
         />
       </VictoryChart>
       <Calendar
-        onDayPress={(day) => {console.log(day)}}
-        onDayLongPress={(day) => {console.log('selected day', day)}}
-        onMonthChange={(month) => {console.log('month changed', month)}}
+        onDayPress={(day) => {
+          setCurrentDate(day.dateString);
+        }}
+        onDayLongPress={(day) => {
+          setCurrentDate(day.dateString);
+        }}
+        onMonthChange={(date) => {
+          setCurrentDate(date.dateString);
+        }}
         hideExtraDays={true}
         firstDay={0}
         hideDayNames={true}
         onPressArrowLeft={substractMonth => substractMonth()}
         onPressArrowRight={addMonth => addMonth()}
-        disableAllTouchEventsForDisabledDays={true}
 				dayComponent={({ date, state }) => {
-				  console.log(date);
-				  if (!dateMoodData.has(date.timestamp)) {
-				  	dateMoodData.set(date.timestamp, [
-              {
-                name: '',
-                value: Math.random() * 1000,
-                color: JOY_COLOR
-              },
-              {
-                name: '',
-                value: Math.random() * 100,
-                color: SAD_COLOR
-              },
-              {
-                name: '',
-                value: Math.random() * 200,
-                color: ANGRY_COLOR
-              },
-            ]);
+				  if (!dateMoodData.current[date.dateString]) {
+				  	dateMoodData.current[date.dateString] = {
+              joy: Math.random() * 20,
+              sorrow: Math.random() * 5,
+              angry: Math.random() * 10
+            };
           }
 
           return (
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setCurrentDate(date.dateString);
+              }}
+            >
               <View style={{
               height: 50,
               width: 50,
@@ -118,7 +155,7 @@ export default function AnalyticsScreen() {
             }}>
                 <View style={StyleSheet.absoluteFill}>
                   <PieChart
-                    data={dateMoodData.get(date.timestamp)}
+                    data={dateDataToPieData(dateMoodData.current[date.dateString])}
                     width={50}
                     height={50}
                     paddingLeft={12}
@@ -147,3 +184,11 @@ export default function AnalyticsScreen() {
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  title: {
+    textAlign: 'center'
+  }
+});
+
+

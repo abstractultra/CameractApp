@@ -132,7 +132,7 @@ export default function AnalyticsScreen() {
                 }}>
                   <Text>{date.day}</Text>
                 </View>
-            </View>
+              </View>
             </TouchableOpacity>
           )
         }}

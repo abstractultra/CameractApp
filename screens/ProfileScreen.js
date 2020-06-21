@@ -1,53 +1,47 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from 'react';
 import { Text, View, FlatList } from "react-native";
 import { Avatar, ButtonGroup, ListItem } from "react-native-elements";
 
+const initialTasks = [
+  [
+    {
+      name: "Go do something",
+			id: 1,
+    },
+    {
+      name: "Eat a cookie",
+      id: 2,
+    },
+    {
+      name: "Go outside",
+      id: 3,
+    },
+  ],
+  [
+    {
+      name: "Go do everything",
+      id: 4,
+    },
+    {
+      name: "Eat a pizza",
+      id: 5,
+    },
+    {
+      name: "Go to your basement",
+      id: 6
+    },
+  ],
+];
+
 export default function ProfileScreen() {
   const [selectedTimeframe, setTimeframe] = useState(0);
-  const tasks = [
-    [
-      {
-        task: "Go do something",
-        checked: false,
-      },
-      {
-        task: "Eat a cookie",
-        checked: true,
-      },
-      {
-        task: "Go outside",
-        checked: false,
-      },
-    ],
-    [
-      {
-        task: "Go do everything",
-        checked: false,
-      },
-      {
-        task: "Eat a pizza",
-        checked: true,
-      },
-      {
-        task: "Go to your basement",
-        checked: false,
-      },
-    ],
-    [
-      {
-        task: "Go make a million dollars",
-        checked: false,
-      },
-      {
-        task: "Go to MIT",
-        checked: true,
-      },
-      {
-        task: "Go to the park",
-        checked: false,
-      },
-    ],
-  ];
+  const [tasks, setTasks] = useState([]);
+  const [checkedTasks, setCheckedTasks] = useState({});
+
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, []);
+
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={{ alignItems: "center", padding: 40 }}>
@@ -70,7 +64,7 @@ export default function ProfileScreen() {
       <FlatList
         data={tasks[selectedTimeframe]}
         renderItem={({ item }) => (
-          <ListItem title={item.task} checkBox={{ checked: item.checked }} />
+          <ListItem title={item.task} checkBox={{ checked: checkedTasks[item.id] }} />
         )}
         keyExtractor={(item, index) => index.toString()}
         bottomDivider

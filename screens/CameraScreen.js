@@ -33,6 +33,7 @@ export default function CameraScreen() {
 
 	useDidUpdate(() => {
 		if (!hasSnackbarBeenShown && imageResult !== null) {
+			setIsOverlayVisible(true);
 			setIsSnackbarVisible(true);
 			setHasSnackbarBeenShown(true);
 		} else {

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "cameractRN",
-    "slug": "cameractRN",
+    "name": "Clear",
+    "slug": "clear",
     "platforms": [
       "ios",
       "android",
@@ -10,7 +10,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "cameract",
+    "scheme": "clear",
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",

@@ -1,21 +1,39 @@
 import React, {useEffect, useState} from 'react';
-import { View } from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {VictoryChart, VictoryLine, VictoryPie} from 'victory-native';
+import { Calendar } from 'react-native-calendars';
+import Pie from 'react-native-pie';
 
 const graphicColor = ['#388087', '#6fb3b8', '#badfe7']; // Colors
-const wantedGraphicData = [{ y: 10 }, { y: 50 }, { y: 40 }]; // Data that we want to display
-const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 100 }]; // Data used to make the animate prop work
+const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 0 }, { y: 100 }]; // Data
+// used
+// to make the animate prop work
+
+const moodCount = {
+  joy: 10,
+  angry: 5,
+  sad: 62,
+  surprised: 1
+};
 
 export default function AnalyticsScreen() {
   const [graphicData, setGraphicData] = useState(defaultGraphicData);
+  const [, refresh] = useState(null);
 
   useEffect(() => {
-    setGraphicData(wantedGraphicData); // Setting the data that we want to
+    const moodData = Object.keys(moodCount).map(mood => {
+      return {
+        y: moodCount[mood],
+      };
+    })
+    setGraphicData(moodData);
     // display
   }, []);
 
+
+
   return (
-    <View style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }}>
       <VictoryPie
         animate={{ easing: 'exp' }}
         data={graphicData}
@@ -43,6 +61,50 @@ export default function AnalyticsScreen() {
           ]}
         />
       </VictoryChart>
-    </View>
+      <Calendar
+        onDayPress={(day) => {console.log(day)}}
+        onDayLongPress={(day) => {console.log('selected day', day)}}
+        onMonthChange={(month) => {console.log('month changed', month)}}
+        hideExtraDays={true}
+        firstDay={0}
+        hideDayNames={true}
+        onPressArrowLeft={substractMonth => substractMonth()}
+        onPressArrowRight={addMonth => addMonth()}
+        disableAllTouchEventsForDisabledDays={true}
+				dayComponent={({ date, state }) => {
+				  return (
+            <View style={{
+              height: 50,
+              width: 50,
+              position: 'relative',
+              flex: -1,
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <View style={StyleSheet.absoluteFill}>
+                <Pie
+									radius={50}
+									sections={[
+                    {
+                      percentage: 15,
+                      color: 'orange'
+                    },
+                    {
+                      percentage: 35,
+                      color: 'blue',
+                    },
+                    {
+                      percentage: 50,
+                      color: 'green'
+                    }
+                  ]}
+                />
+              </View>
+              <Text>{ date.day }</Text>
+            </View>
+          )
+        }}
+      />
+    </ScrollView>
   );
 }

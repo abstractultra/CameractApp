@@ -1,8 +1,11 @@
 import React from 'react';
-import { View } from 'react-native';
+import {Text, View} from 'react-native';
 
 export default function ProfileScreen() {
   return (
-    <View></View>
+    <View>
+      <Text>Leon Si</Text>
+
+    </View>
   );
 }

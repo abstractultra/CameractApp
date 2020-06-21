@@ -57,6 +57,7 @@ export default function ProfileScreen() {
         <Text style={{ fontSize: 30, fontWeight: "bold" }}>Leon Si</Text>
         <Text style={{ fontSize: 15 }}>Streak: 3 🔥</Text>
         <ButtonGroup
+          containerStyle={{marginTop: 20, marginBottom: -20 }}
           buttons={["Day", "Week"]}
           onPress={setTimeframe}
           selectedIndex={selectedTimeframe}
@@ -67,6 +68,7 @@ export default function ProfileScreen() {
         renderItem={({ item }) => (
           <ListItem
             title={item.name}
+            contentContainerStyle={{ paddingLeft: 20 }}
             checkBox={{
               checked: checkedTasks[item.id],
               onPress: () => {

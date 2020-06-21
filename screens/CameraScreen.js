@@ -11,9 +11,16 @@ import {useEffect, useRef, useState} from 'react';
 import { Camera } from 'expo-camera';
 import { BlurView } from 'expo-blur';
 import ButtonConstants from '../constants/Buttons';
+import {Snackbar} from 'react-native-paper';
+import {Overlay} from 'react-native-elements';
+import useDidUpdate from '../hooks/useDidUpdate';
 
 export default function CameraScreen() {
 	const [hasPermission, setHasPermission] = useState(null);
+	const [isSnackbarVisible, setIsSnackbarVisible] = useState(false);
+	const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+	const [hasSnackbarBeenShown, setHasSnackbarBeenShown] = useState(false);
+	const [imageResult, setImageResult] = useState(null);
 	const scaleAnimation = useRef(new Animated.Value(1)).current;
 	const cameraRef = useRef(null);
 
@@ -24,6 +31,15 @@ export default function CameraScreen() {
 		})();
 	}, []);
 
+	useDidUpdate(() => {
+		if (!hasSnackbarBeenShown && imageResult !== null) {
+			setIsSnackbarVisible(true);
+			setHasSnackbarBeenShown(true);
+		} else {
+			setIsSnackbarVisible(false);
+		}
+	}, [imageResult]);
+
 	if (hasPermission === null) {
 		return <View />;
 	}
@@ -33,6 +49,12 @@ export default function CameraScreen() {
 
 	return (
 		<View style={{ flex: 1 }}>
+			<Overlay
+				isVisible={isOverlayVisible}
+				onBackdropPress={() => setIsOverlayVisible(false)}
+			>
+				<Text>{JSON.stringify(imageResult)}</Text>
+			</Overlay>
 			<View style={styles.container}>
 				<Camera
 					style={styles.camera}
@@ -73,8 +95,7 @@ export default function CameraScreen() {
 							body: formData
 						});
 						const result = await response.json();
-						console.log(result);
-
+						setImageResult(result);
 					}}
 				>
 					<View style={styles.outerPhotoButton}>
@@ -88,10 +109,23 @@ export default function CameraScreen() {
 						/>
 					</View>
 				</TouchableWithoutFeedback>
-
 				<BlurView intensity={100} style={styles.blur} />
 				<BlurView intensity={100} style={styles.blur} />
 			</View>
+			<Snackbar
+				visible={isSnackbarVisible}
+				onDismiss={() => setIsSnackbarVisible(false)}
+				duration={2000}
+				action={{
+					label: 'View',
+					onPress: () => {
+						setIsOverlayVisible(true);
+						setIsSnackbarVisible(false);
+					},
+				}}
+			>
+				Image successfully sent!
+			</Snackbar>
 		</View>
 	);
 }

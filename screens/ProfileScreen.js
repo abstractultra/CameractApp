@@ -62,7 +62,7 @@ export default function ProfileScreen() {
         <Text style={{ fontSize: 30, fontWeight: "bold" }}>Leon Si</Text>
         <Text style={{ fontSize: 15 }}>Streak: 3 🔥</Text>
         <ButtonGroup
-          buttons={["Day", "Week", "Month"]}
+          buttons={["Day", "Week"]}
           onPress={setTimeframe}
           selectedIndex={selectedTimeframe}
         />

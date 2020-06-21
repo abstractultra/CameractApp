@@ -4,14 +4,19 @@ import {VictoryChart, VictoryLine, VictoryPie} from 'victory-native';
 import { Calendar } from 'react-native-calendars';
 import { PieChart } from 'react-native-chart-kit';
 
+const dateMoodData = new Map();
+
 const graphicColor = ['#388087', '#6fb3b8', '#badfe7']; // Colors
 const defaultGraphicData = [{ y: 0 }, { y: 0 }, { y: 0 }, { y: 100 }];
+
+const JOY_COLOR = 'orange';
+const ANGRY_COLOR = 'red';
+const SAD_COLOR = 'lightblue';
 
 const moodCount = {
   joy: 10,
   angry: 5,
-  sad: 62,
-  surprised: 1
+  sad: 62
 };
 
 const chartConfig = {
@@ -27,7 +32,6 @@ const chartConfig = {
 
 export default function AnalyticsScreen() {
   const [graphicData, setGraphicData] = useState(defaultGraphicData);
-  const [, refresh] = useState(null);
 
   useEffect(() => {
     const moodData = Object.keys(moodCount).map(mood => {
@@ -81,6 +85,27 @@ export default function AnalyticsScreen() {
         onPressArrowRight={addMonth => addMonth()}
         disableAllTouchEventsForDisabledDays={true}
 				dayComponent={({ date, state }) => {
+				  console.log(date);
+				  if (!dateMoodData.has(date.timestamp)) {
+				  	dateMoodData.set(date.timestamp, [
+              {
+                name: '',
+                value: Math.random() * 1000,
+                color: JOY_COLOR
+              },
+              {
+                name: '',
+                value: Math.random() * 100,
+                color: SAD_COLOR
+              },
+              {
+                name: '',
+                value: Math.random() * 200,
+                color: ANGRY_COLOR
+              },
+            ]);
+          }
+
           return (
             <TouchableOpacity>
               <View style={{
@@ -93,25 +118,7 @@ export default function AnalyticsScreen() {
             }}>
                 <View style={StyleSheet.absoluteFill}>
                   <PieChart
-                    data={
-                      [
-                        {
-                          name: '',
-                          value: Math.random() * 100,
-                          color: 'orange'
-                        },
-                        {
-                          name: '',
-                          value: Math.random() * 100,
-                          color: 'green'
-                        },
-                        {
-                          name: '',
-                          value: Math.random() * 100,
-                          color: 'lightblue'
-                        },
-                      ]
-                    }
+                    data={dateMoodData.get(date.timestamp)}
                     width={50}
                     height={50}
                     paddingLeft={12}

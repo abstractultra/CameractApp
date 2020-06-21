@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {TouchableOpacity, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {VictoryChart, VictoryLine, VictoryPie} from 'victory-native';
 import { Calendar } from 'react-native-calendars';
 import { PieChart } from 'react-native-chart-kit';
@@ -81,8 +81,9 @@ export default function AnalyticsScreen() {
         onPressArrowRight={addMonth => addMonth()}
         disableAllTouchEventsForDisabledDays={true}
 				dayComponent={({ date, state }) => {
-				  return (
-            <View style={{
+          return (
+            <TouchableOpacity>
+              <View style={{
               height: 50,
               width: 50,
               position: 'relative',
@@ -90,48 +91,49 @@ export default function AnalyticsScreen() {
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <View style={StyleSheet.absoluteFill}>
-                <PieChart
-									data={
-									  [
-                      {
-                        name: '',
-                        value: Math.random() * 100,
-                        color: 'orange'
-                      },
-                      {
-                        name: '',
-                        value: Math.random() * 100,
-                        color: 'green'
-                      },
-                      {
-                        name: '',
-                        value: Math.random() * 100,
-                        color: 'lightblue'
-                      },
-                    ]
-                  }
-									width={50}
-                  height={50}
-									paddingLeft={12}
-                  chartConfig={chartConfig}
-                  hasLegend={false}
-                  accessor="value"
-									backgroundColor="transparent"
-                />
-              </View>
-              <View style={{
-              	flex: -1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 15,
-                backgroundColor: 'white',
-                width: 30,
-                height: 30
-              }}>
-                <Text>{ date.day }</Text>
-              </View>
+                <View style={StyleSheet.absoluteFill}>
+                  <PieChart
+                    data={
+                      [
+                        {
+                          name: '',
+                          value: Math.random() * 100,
+                          color: 'orange'
+                        },
+                        {
+                          name: '',
+                          value: Math.random() * 100,
+                          color: 'green'
+                        },
+                        {
+                          name: '',
+                          value: Math.random() * 100,
+                          color: 'lightblue'
+                        },
+                      ]
+                    }
+                    width={50}
+                    height={50}
+                    paddingLeft={12}
+                    chartConfig={chartConfig}
+                    hasLegend={false}
+                    accessor="value"
+                    backgroundColor="transparent"
+                  />
+                </View>
+                <View style={{
+                  flex: -1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 15,
+                  backgroundColor: 'white',
+                  width: 30,
+                  height: 30
+                }}>
+                  <Text>{date.day}</Text>
+                </View>
             </View>
+            </TouchableOpacity>
           )
         }}
       />

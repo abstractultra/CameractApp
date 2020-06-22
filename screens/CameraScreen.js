@@ -14,6 +14,7 @@ import ButtonConstants from '../constants/Buttons';
 import {Snackbar} from 'react-native-paper';
 import {Overlay} from 'react-native-elements';
 import useDidUpdate from '../hooks/useDidUpdate';
+import {iOSUIKit} from 'react-native-typography';
 
 export default function CameraScreen() {
 	const [hasPermission, setHasPermission] = useState(null);
@@ -33,8 +34,8 @@ export default function CameraScreen() {
 
 	useDidUpdate(() => {
 		if (!hasSnackbarBeenShown && imageResult !== null) {
-			setIsOverlayVisible(true);
 			setIsSnackbarVisible(true);
+			setIsOverlayVisible(true);
 			setHasSnackbarBeenShown(true);
 		} else {
 			setIsSnackbarVisible(false);
@@ -53,8 +54,15 @@ export default function CameraScreen() {
 			<Overlay
 				isVisible={isOverlayVisible}
 				onBackdropPress={() => setIsOverlayVisible(false)}
+				style={{ flex: -1, alignItems: 'center' }}
 			>
-				<Text>{JSON.stringify(imageResult)}</Text>
+				<View>
+					<Text style={{fontWeight: 'bold'}}>On a scale from 0 - 3</Text>
+					<Text>Joy: {imageResult?.likelihood.joy}</Text>
+					<Text>Angry: {imageResult?.likelihood.angry}</Text>
+					<Text>Sad: {imageResult?.likelihood.sad}</Text>
+					<Text>Conclusion: {imageResult?.mostLikely}.</Text>
+				</View>
 			</Overlay>
 			<View style={styles.container}>
 				<Camera

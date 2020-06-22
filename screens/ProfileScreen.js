@@ -5,25 +5,37 @@ import { Avatar, ButtonGroup, ListItem } from "react-native-elements";
 const initialTasks = [
   [
     {
-      name: "Go do something",
+      name: "Meditate for 10 minutes.",
     },
     {
-      name: "Eat a cookie",
+      name: "Take a walk outside.",
     },
     {
-      name: "Go outside",
+      name: "Write down a compliment about yourself.",
     },
+    {
+      name: "Write about your day in a journal."
+    },
+    {
+      name: "Do something that you enjoy, and do it deliberately."
+    }
   ],
   [
     {
-      name: "Go do everything",
+      name: "Walk/Run 5k in total.",
     },
     {
-      name: "Eat a pizza",
+      name: "Keep a log of what you eat.",
     },
     {
-      name: "Go to your basement",
+      name: "Finish reading a book."
     },
+    {
+      name: "Talk about your week with a friend over voice."
+    },
+    {
+      name: "Write down your goals for the week ahead."
+    }
   ],
 ].map((() => {
   let id = 0;

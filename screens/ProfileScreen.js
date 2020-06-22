@@ -22,6 +22,7 @@ const initialTasks = [
   ],
   [
     {
+<<<<<<< HEAD
       name: "Walk/Run 5k in total.",
     },
     {
